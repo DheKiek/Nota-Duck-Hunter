@@ -1,0 +1,606 @@
+11.12 22.52
+Aplikasi Nota
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Gambar diatas -->
+<div style="text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:15px;">
+
+
+<!-- GAMBAR DI ATAS JUDUL -->
+<img src="https://i.imgur.com/GolCxsP.jpeg" alt="Logo" style="max-width:90px; height:auto; margin-bottom:8px;">
+
+<title>Duck Hunter</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        :root {
+            --primary: #f59e0b; --primary-dark: #d97706; --secondary: #1f2937;
+            --light: #f9fafb; --gray: #e5e7eb; --card-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        body { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); min-height: 100vh; padding: 15px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { color: var(--secondary); font-size: 1.6rem; margin-bottom: 5px; }
+        header p { color: #6b7280; font-size: 0.9rem; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: var(--card-shadow); }
+        .card h2 { font-size: 1rem; color: var(--secondary); margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--gray); }
+        .form-row { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; }
+        .form-group { flex: 1; min-width: 180px; }
+        label { display: block; font-size: 0.8rem; color: #4b5563; margin-bottom: 5px; font-weight: 500; }
+        input { width: 100%; padding: 9px 10px; border: 1px solid var(--gray); border-radius: 6px; font-size: 0.95rem; }
+        input:focus { outline: none; border-color: var(--primary); }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 950px; }
+        th, td { padding: 6px 3px; text-align: center; border-bottom: 1px solid var(--gray); }
+        th { background: var(--light); font-size: 0.72rem; font-weight: 600; }
+        td input { width: 85%; padding: 4px 2px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.8rem; text-align: center; }
+        td input.ekor { background: #fffbeb; border-color: #fcd34d; }
+        .btn { padding: 11px 24px; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
+        .btn-secondary { background: var(--secondary); color: white; margin-left: 10px; }
+        .result-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 18px; margin-top: 15px; white-space: pre-wrap; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; color: #166534; display: none; text-align: left;
+}
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-top: 15px; display: none; }
+        .summary-item { background: var(--light); padding: 12px; border-radius: 8px; text-align: left; }
+        .summary-item .label { font-size: 0.78rem; color: #6b7280; margin-bottom: 4px; }
+        .summary-item .value { font-size: 1.1rem; font-weight: 700; color: var(--secondary); }
+        .highlight { background: #fef3c7; border: 1px solid #fcd34d; }
+        .contoh-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 0.85rem; color: #1e40af; }
+  </div>
+  </style> 
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1> Duck Hunter </h1>
+        <!--    <p>10 Baris × 10 Kolom Timbangan Terpisah</p>-->
+        </header>
+
+        <div class="card">
+            <h2> Cara Pakai</h2>
+            <div class="contoh-box">
+                <strong>Setiap Kolom = 1 Timbangan Terpisah</strong><br>
+                • 10 Baris ke Bawah × 10 Kolom ke Samping<br>
+                • Setiap kolom punya Berat(B) + Ekor(E) sendiri<br>
+                Contoh: Baris10 K10 Berat=25.0 Ekor=9 | K1-K9 Ekor=15 ✅
+            </div>
+        </div>
+
+        <div class="card">
+            <h2> Data Umum</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tanggal">Tanggal</label>
+                    <input type="text" id="tanggal" placeholder="Contoh: 12-11-2026">
+                </div>
+                <div class="form-group">
+                    <label for="namaTernak">Nama Ternak</label>
+                    <input type="text" id="namaTernak" placeholder="Masukkan nama">
+                </div>
+                <div class="form-group">
+                    <label for="hargaKg">Harga per Kg (Rp)</label>
+                    <input type="number" id="hargaKg" placeholder="Contoh: 23500">
+                </div>
+                <div class="form-group">
+                    <label for="defaultEkor">Jumlah Ekor / Timbangan</label>
+                   <input type="number" id="defaultEkor" placeholder="Contoh: 15" oninput="isiSemuaEkor(this.value)">
+               </div>
+
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>✏️ Data Timbangan — B=Berat(kg) | E=Jumlah Ekor</h2>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Baris</th>
+                            <th colspan="2">KOLOM 1</th>
+                            <th colspan="2">KOLOM 2</th>
+                            <th colspan="2">KOLOM 3</th>
+                            <th colspan="2">KOLOM 4</th>
+                            <th colspan="2">KOLOM 5</th>
+                            <th colspan="2">KOLOM 6</th>
+                            <th colspan="2">KOLOM 7</th>
+                            <th colspan="2">KOLOM 8</th>
+                            <th colspan="2">KOLOM 9</th>
+                            <th colspan="2">KOLOM 10</th>
+                        </tr>
+                        <tr>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                            <th>B</th><th>E</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+       
+        
+                    </table>
+            </div>
+
+            <!-- TOMBOL UTAMA -->
+            <div style="margin-top: 20px; display: flex; flex-wrap: wrap; gap: 12px;">
+                <button onclick="hitungSemua()" style="
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #f59e0b, #d97706);
+                    color: white;
+                ">🧮 HITUNG SEMUA</button>
+
+                 <button onclick="resetForm()" style="
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #374151, #1f2937);
+                    color: white;
+                ">🔄 RESET</button>
+
+                <button onclick="cetakNota()" style="
+                    padding: 12px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white;
+                ">🖨️ CETAK NOTA</button>         
+            </div>
+        </div>
+        
+
+        <div class="card">
+            <h2> Hasil Perhitungan</h2>
+            <div class="summary-grid" id="summaryGrid">
+                <div class="summary-item">
+                    <div class="label">Total Timbangan</div>
+                    <div class="value" id="resTimbangan">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Jumlah Ekor</div>
+                    <div class="value" id="resEkor">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Berat Bersih (kg)</div>
+                    <div class="value" id="resBersih">0.00</div>
+                </div>
+                <div class="summary-item">
+                    <div class="label">Rata-rata</div>
+                    <div class="value" id="resRata">0.0000</div>
+                </div>
+                <div class="summary-item highlight" style="grid-column: span 2;">
+                    <div class="label">Total Harga (Rp)</div>
+                    <div class="value" id="resHarga">0</div>
+                </div>
+            </div>
+            <div class="result-box" id="resultBox"></div>
+        </div>
+    </div>
+
+    <script>
+    
+    //rincian data
+    let rincianData = [];
+    let ringkasData = {};
+
+        // Buat 10 Baris × 10 Kolom
+        const tableBody = document.getElementById('tableBody');
+        for (let baris = 1; baris <= 10; baris++) {
+            const row = document.createElement('tr');
+            let cells = `<td><strong>${baris}</strong></td>`;
+            for (let kolom = 1; kolom <= 10; kolom++) {
+                cells += `
+                 <!--   <td><input type="number" step="0.1" class="b${baris}k${kolom}" placeholder="-"></td>-->
+                    <!-- Yang lama:
+                  <td><input type="number" step="0.1" class="b${baris}k${kolom}" placeholder="-"></td>-->
+
+                  <!-- ✅ Ganti jadi: -->
+                  <td><input type="number" step="0.1" class="b${baris}k${kolom}" placeholder="-" oninput="isiEkorOtomatis(this, ${baris}, ${kolom})"></td>
+                  <td><input type="number" class="e${baris}k${kolom} ekor" placeholder="0"></td>
+                `;
+            }
+            row.innerHTML = cells;
+            tableBody.appendChild(row);
+        }
+
+    /*  function isiSemuaEkor(nilai) {
+    const jumlah = parseInt(nilai);
+    if (isNaN(jumlah) || jumlah <= 0) return;
+    
+    const semuaInputEkor = document.querySelectorAll('input.ekor');
+    semuaInputEkor.forEach(input => {
+        input.value = jumlah;
+    });
+}*/
+
+// Isi Ekor otomatis saat kolom Berat diisi
+function isiEkorOtomatis(inputBerat, baris, kolom) {
+    const nilaiBerat = inputBerat.value;
+    const defaultEkor = document.getElementById('defaultEkor').value;
+    
+    // Kalau Berat diisi dan ada angka default ekor
+    if (nilaiBerat && defaultEkor) {
+        const ekorInput = document.querySelector(`.e${baris}k${kolom}`);
+        // Hanya isi kalau kolom E masih kosong / 0
+        if (ekorInput && (!ekorInput.value || ekorInput.value === '0')) {
+            ekorInput.value = defaultEkor;
+        }
+    }
+}
+
+
+
+        function hitungSemua() {
+    const tanggal = document.getElementById('tanggal').value || '-';
+    const namaTernak = document.getElementById('namaTernak').value || '-';
+    const hargaKg = parseFloat(document.getElementById('hargaKg').value) || 0;
+
+    let totalBerat = 0, totalEkor = 0, totalTimbangan = 0;
+    const rincian = [];
+    
+    // Simpan total Berat & Ekor untuk setiap kolom
+    let totalBeratPerKolom = Array(11).fill(0);
+    let totalEkorPerKolom = Array(11).fill(0);
+
+    // ✅ Yang baru — urut Kolom dulu
+for (let k = 1; k <= 10; k++) {        // Mulai dari Kolom 1
+    for (let b = 1; b <= 10; b++) {    // Baca Baris 1 sampai 10
+        const berat = parseFloat(document.querySelector(`.b${b}k${k}`).value) || null;
+        const ekor = parseInt(document.querySelector(`.e${b}k${k}`).value) || 0;
+        
+        if (berat !== null && ekor > 0) {
+            totalBerat += berat;
+            totalEkor += ekor;
+            totalTimbangan++;
+            rincian.push({ baris: b, kolom: k, berat, ekor });
+            
+            totalBeratPerKolom[k] += berat;
+            totalEkorPerKolom[k] += ekor;
+        }
+    }
+}
+
+
+    const rataRata = totalEkor > 0 ? totalBerat / totalEkor : 0;
+    const totalHarga = totalBerat * hargaKg;
+
+    // Tampilkan ringkasan di kotak atas
+    document.getElementById('summaryGrid').style.display = 'grid';
+    document.getElementById('resTimbangan').textContent = totalTimbangan;
+    document.getElementById('resEkor').textContent = totalEkor.toLocaleString('id-ID');
+    document.getElementById('resBersih').textContent = totalBerat.toFixed(1);
+    document.getElementById('resRata').textContent = rataRata.toFixed(2);
+    document.getElementById('resHarga').textContent = totalHarga.toLocaleString('id-ID');
+
+    // Tampilkan hasil lengkap di kotak bawah
+    const garis = '═'.repeat(55);
+    let output = `${garis}
+    🦆 HASIL PERHITUNGAN NOTA — DUCK HUNTER
+${garis}
+
+ Tanggal      : ${tanggal}
+ Nama Ternak : ${namaTernak}
+
+ RINCIAN TIMBANGAN (Menurun)
+${garis}
+No   B-K   │ Berat(kg) │ Ekor
+───────────┼───────────┼──────
+`;
+
+    // Tampilkan setiap baris data
+    rincian.forEach((t, index) => {
+        const no = String(index + 1).padStart(2);
+        const label = `${t.baris}-${t.kolom}`;
+        output += `${no}  ${label.padEnd(5)} │ ${t.berat.toFixed(1).padStart(9)} │ ${String(t.ekor).padStart(4)}\n`;
+    });
+
+    // Tampilkan total per kolom
+    output += `───────────┴───────────┴──────
+
+📊 JUMLAH PER KOLOM
+${garis}
+Kolom │ Berat(kg) │ Ekor
+──────┼───────────┼──────
+`;
+
+    for (let k = 1; k <= 10; k++) {
+        if (totalBeratPerKolom[k] > 0) {
+            output += ` K${String(k).padStart(2)}  │ ${totalBeratPerKolom[k].toFixed(1).padStart(9)} │ ${String(totalEkorPerKolom[k]).padStart(4)}\n`;
+        }
+    }
+
+    // Tampilkan total keseluruhan
+    output += `──────┴───────────┴──────
+
+ JUMLAH TOTAL
+   Berat Bersih : ${totalBerat.toFixed(1)} kg
+   Total Ekor   : ${totalEkor} ekor
+   Timbangan    : ${totalTimbangan} kolom
+
+ RATA-RATA
+   = ${totalBerat.toFixed(1)} ÷ ${totalEkor}
+   = ${rataRata.toFixed(1)} kg/ekor
+
+ TOTAL HARGA
+   = ${totalBerat.toFixed(1)} × Rp ${hargaKg.toLocaleString('id-ID')}
+   = Rp ${totalHarga.toLocaleString('id-ID')}
+
+${garis}
+✅ Selesai!
+`;
+
+    const resultBox = document.getElementById('resultBox');
+    resultBox.style.display = 'block';
+    resultBox.textContent = output;
+}
+
+
+
+        function resetForm() {
+            document.getElementById('tanggal').value = '';
+            document.getElementById('namaTernak').value = '';
+            document.getElementById('hargaKg').value = '';
+            document.querySelectorAll('#tableBody input').forEach(inp => inp.value = '');
+            document.getElementById('summaryGrid').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+        }
+ 
+
+function cetakNota() {
+    const tanggal = document.getElementById('tanggal')?.value || '-';
+    const namaTernak = document.getElementById('namaTernak')?.value || '-';
+    const hargaKg = parseFloat(document.getElementById('hargaKg')?.value) || 0;
+    
+    let rincian = [];
+    let totalBerat = 0, totalEkor = 0, totalTimbangan = 0;
+    let totalBeratPerKolom = Array(11).fill(0);
+    let totalEkorPerKolom = Array(11).fill(0);
+    
+    // ✅ URUT: Kolom dulu, baru Baris (1-10 per kolom)
+    for (let k = 1; k <= 10; k++) {
+        for (let b = 1; b <= 10; b++) {
+            const beratInput = document.querySelector(`.b${b}k${k}`);
+            const ekorInput = document.querySelector(`.e${b}k${k}`);
+            const berat = parseFloat(beratInput?.value) || null;
+            const ekor = parseInt(ekorInput?.value) || 0;
+            
+            if (berat !== null && ekor > 0) {
+                totalBerat += berat;
+                totalEkor += ekor;
+                totalTimbangan++;
+                rincian.push({ no: rincian.length + 1, baris: b, kolom: k, berat, ekor });
+                
+                totalBeratPerKolom[k] += berat;
+                totalEkorPerKolom[k] += ekor;
+            }
+        }
+    }
+    
+    if (rincian.length === 0) {
+        alert('⚠️ Silakan isi data lalu klik HITUNG SEMUA dulu!');
+        return;
+    }
+    
+    const rataRata = totalEkor > 0 ? totalBerat / totalEkor : 0;
+    const totalHarga = totalBerat * hargaKg;
+
+    // Tampilkan Nota
+    document.body.style.cssText = 'font-family:monospace;max-width:320px;margin:0 auto;padding:20px;background:white;';
+    
+    let notaHTML = `
+<div style="text-align:center;border-bottom:1px dashed #000;padding-bottom:10px;margin-bottom:15px;">
+<img src="https://i.imgur.com/GolCxsP.jpeg" alt="Logo" style="max-width:90px; height:auto; margin-bottom:8px;">
+<h2 style="margin:0;font-size:18px;">DUCK HUNTER</h2>
+<p style="margin:5px 0;font-size:13px;color:#555;">Bakoel & Pemotongan Bebek</p>
+</div>
+
+<div style="font-size:14px;line-height:1.8;margin-bottom:15px;">
+<p><strong>Tanggal:</strong> ${tanggal}</p>
+<p><strong>Nama Peternak:</strong> ${namaTernak}</p>
+</div>
+
+<table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px;">
+<thead>
+<tr style="border-bottom:1px solid #000;">
+<th style="padding:5px 2px;text-align:left;width:15%;">No</th>
+<th style="padding:5px 2px;text-align:left;width:25%;">B-K</th>
+<th style="padding:5px 2px;text-align:right;width:30%;">Berat</th>
+<th style="padding:5px 2px;text-align:right;width:30%;">Ekor</th>
+</tr>
+</thead>
+<tbody>
+`;
+
+    // ✅ Rincian data
+    rincian.forEach(t => {
+        notaHTML += `
+<tr style="border-bottom:1px dotted #ccc;">
+<td>${t.no}</td>
+<td>${t.baris}-${t.kolom}</td>
+<td style="text-align:right;">${t.berat.toFixed(1)}</td>
+<td style="text-align:right;">${t.ekor}</td>
+</tr>`;
+    });
+
+    // ✅ Jumlah per Kolom
+    notaHTML += `
+<tr style="border-top:2px solid #000;">
+<th colspan="2" style="text-align:left;padding:8px 2px;">📊 JUMLAH PER KOLOM</th>
+<th style="text-align:right;padding:8px 2px;">Berat</th>
+<th style="text-align:right;padding:8px 2px;">Ekor</th>
+</tr>`;
+
+    for (let k = 1; k <= 10; k++) {
+        if (totalBeratPerKolom[k] > 0) {
+            notaHTML += `
+<tr>
+<td></td>
+<td>Kolom ${k}</td>
+<td style="text-align:right;">${totalBeratPerKolom[k].toFixed(1)}</td>
+<td style="text-align:right;">${totalEkorPerKolom[k]}</td>
+</tr>`;
+        }
+    }
+
+    // ✅ Total Keseluruhan
+    notaHTML += `
+</tbody>
+</table>
+
+<div style="border-top:1px dashed #000;padding-top:10px;font-size:14px;">
+<p style="display:flex;justify-content:space-between;margin:3px 0;">
+<span>Total Timbangan</span><span>${totalTimbangan}</span>
+</p>
+<p style="display:flex;justify-content:space-between;margin:3px 0;">
+<span>Jumlah Ekor</span><span>${totalEkor.toLocaleString('id-ID')}</span>
+</p>
+<p style="display:flex;justify-content:space-between;margin:3px 0;">
+<span>Berat Bersih</span><span>${totalBerat.toFixed(1)} kg</span>
+</p>
+<p style="display:flex;justify-content:space-between;margin:3px 0;">
+<span>Rata-rata</span><span>${rataRata.toFixed(2)} kg/ekor</span>
+</p>
+<p style="display:flex;justify-content:space-between;margin:3px 0;">
+<span>Harga/Kg</span><span>Rp ${hargaKg.toLocaleString('id-ID')}</span>
+</p>
+<p style="display:flex;justify-content:space-between;margin:8px 0 0;padding-top:8px;border-top:1px solid #000;font-weight:bold;font-size:15px;">
+<span>TOTAL BAYAR</span><span>Rp ${totalHarga.toLocaleString('id-ID')}</span>
+</p>
+</div>
+
+<p style="text-align:center;margin-top:20px;font-size:13px;color:#666;">Terima Kasih — Semoga Lancar Rezekinya 🦆</p>
+<p style="text-align:center;font-size:11px;color:#888;margin-top:5px;">© 2026 D_Kiek. Hak Cipta Dilindungi.</p>
+
+<style>
+@media print {
+    button { display: none !important; }
+}
+</style>
+
+<button onclick="window.print()" style="width:100%;padding:12px;background:#10b981;color:white;border:none;border-radius:6px;font-size:16px;cursor:pointer;margin-top:20px;">🖨️ CETAK</button>
+<button onclick="location.reload()" style="width:100%;padding:10px;background:#374151;color:white;border:none;border-radius:6px;font-size:15px;cursor:pointer;margin-top:10px;">← KEMBALI</button>
+`;
+    
+    document.body.innerHTML = notaHTML;
+}
+
+    
+ 
+
+//tanggal 
+    // ... semua fungsi lainnya di atas ...
+
+    // ✅ Tempel di sini
+    window.onload = function() {
+    const namaBulan = [
+        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    const sekarang = new Date();
+    const tgl = sekarang.getDate();
+    const bln = namaBulan[sekarang.getMonth()];
+    const thn = sekarang.getFullYear();
+    const tanggalOtomatis = tgl + ' ' + bln + ' ' + thn;
+    
+    const inputTanggal = document.getElementById('tanggal');
+    if (inputTanggal) {
+        inputTanggal.value = tanggalOtomatis;
+        // inputTanggal.readOnly = true; // hapus tanda // kalau mau terkunci
+    }
+};
+
+
+   /*          
+function cetakNota() {
+    // Cek apakah hasil perhitungan sudah ada
+ /*   if (!ringkasData.totalBerat) {
+        alert('⚠️ Klik "HITUNG SEMUA" terlebih dahulu!');
+        return;
+    }*/
+    // Cek berdasarkan hasil yang terlihat, bukan berdasarkan rincianData
+//const totalBeratElement = document.getElementById('resBersih');
+//const hasilAda = totalBeratElement && totalBeratElement.textContent !== '0.00' && totalBeratElement.textContent !== '';
+
+//if (!hasilAda) {
+/*   alert('⚠️ Klik "HITUNG SEMUA" terlebih dahulu!');
+    return;
+} 
+
+    
+    // ... sisa kode fungsi cetak tetap sama ...
+
+ 
+            // Isi data ke nota
+            document.getElementById('nTanggal').textContent = ringkasData.tanggal;
+            document.getElementById('nNama').textContent = ringkasData.namaTernak;
+            document.getElementById('nTim').textContent = ringkasData.totalTimbangan;
+            document.getElementById('nEkor').textContent = ringkasData.totalEkor.toLocaleString('id-ID');
+            document.getElementById('nBerat').textContent = ringkasData.totalBerat.toFixed() + ' kg';
+            document.getElementById('nHargaKg').textContent = 'Rp ' + ringkasData.hargaKg.toLocaleString('id-ID');
+            document.getElementById('nTotal').textContent = 'Rp ' + ringkasData.totalHarga.toLocaleString('id-ID');
+
+            // Isi tabel rincian
+            const notaBody = document.getElementById('notaBody');
+            notaBody.innerHTML = '';
+            rincianData.forEach(t => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${t.no}</td>
+                    <td>${t.baris}-${t.kolom}</td>
+                    <td>${t.berat.toFixed()}</td>
+                    <td>${t.ekor}</td>
+                `;
+                notaBody.appendChild(row);
+            });
+
+            window.print();
+        }
+
+        function resetForm() {
+            document.getElementById('tanggal').value = '';
+            document.getElementById('namaTernak').value = '';
+            document.getElementById('hargaKg').value = '';
+
+            for (let b = 1; b <= 10; b++) {
+                for (let k = 1; k <= 10; k++) {
+                    const beratInput = document.querySelector(`.b${b}k${k}`);
+                    const ekorInput = document.querySelector(`.e${b}k${k}`);
+                    if (beratInput) beratInput.value = '';
+                    if (ekorInput) ekorInput.value = '';
+                }
+            }
+
+            document.getElementById('summaryGrid').style.display = 'none';
+            document.getElementById('resultBox').style.display = 'none';
+            
+            
+        }*/
+
+        
+    </script>
+    <!-- COPYRIGHT -->
+<p style="text-align: center; font-size: 11px; color: #888; margin-top: 20px; padding-bottom: 15px;">© 2026 D_Kiek. Hak Cipta Dilindungi.</p>
+
+</body>
+</html>
+
